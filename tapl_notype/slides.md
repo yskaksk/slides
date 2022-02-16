@@ -23,35 +23,16 @@ drawings:
 
 # TaPL ふりかえり
 
-型システム入門への入門
-
-<!--
-The last comment block of each slide will be treated as slide notes. It will be visible and editable in Presenter Mode along with the slide. [Read more in the docs](https://sli.dev/guide/syntax.html#notes)
--->
+「型システム入門」への入門
 
 ---
 
-# What is Slidev?
+# アジェンダ
 
-Slidev is a slides maker and presenter designed for developers, consist of the following features
+今日のアジェンダ
 
-- 📝 **Text-based** - focus on the content with Markdown, and then style them later
-- 🎨 **Themable** - theme can be shared and used with npm packages
-- 🧑‍💻 **Developer Friendly** - code highlighting, live coding with autocompletion
-- 🤹 **Interactive** - embedding Vue components to enhance your expressions
-- 🎥 **Recording** - built-in recording and camera view
-- 📤 **Portable** - export into PDF, PNGs, or even a hostable SPA
-- 🛠 **Hackable** - anything possible on a webpage
-
-<br>
-<br>
-
-Read more about [Why Slidev?](https://sli.dev/guide/why)
-
-<!--
-You can have `style` tag in markdown to override the style for the current page.
-Learn more: https://sli.dev/guide/syntax#embedded-styles
--->
+- 📝 第３章 型なし算術式 の振り返り
+- 🎨 第５章 型なしラムダ計算 の振り返り
 
 <style>
 h1 {
@@ -67,301 +48,516 @@ h1 {
 
 ---
 
-# Navigation
+# モチベーション
 
-Hover on the bottom-left corner to see the navigation's controls panel, [learn more](https://sli.dev/guide/navigation.html)
+- 第３章「型なし算術式」は第８章「型付き算術式」のベースになっている
+- 第５章「型なしラムダ計算」は第９章「単純型付きラムダ計算」のベースになっている
 
-### Keyboard Shortcuts
-
-|     |     |
-| --- | --- |
-| <kbd>right</kbd> / <kbd>space</kbd>| next animation or slide |
-| <kbd>left</kbd>  / <kbd>shift</kbd><kbd>space</kbd> | previous animation or slide |
-| <kbd>up</kbd> | previous slide |
-| <kbd>down</kbd> | next slide |
-
-<!-- https://sli.dev/guide/animations.html#click-animations -->
-<img
-  v-click
-  class="absolute -bottom-9 -left-7 w-80 opacity-50"
-  src="https://sli.dev/assets/arrow-bottom-left.svg"
-/>
-<p v-after class="absolute bottom-23 left-45 opacity-30 transform -rotate-10">Here!</p>
-
----
-layout: image-right
-image: https://source.unsplash.com/collection/94734566/1920x1080
----
-
-# Code
-
-Use code snippets and get the highlighting directly![^1]
-
-```ts {all|2|1-6|9|all}
-interface User {
-  id: number
-  firstName: string
-  lastName: string
-  role: string
-}
-
-function updateUser(id: number, update: User) {
-  const user = getUser(id)
-  const newUser = {...user, ...update}  
-  saveUser(id, newUser)
-}
-```
-
-<arrow v-click="3" x1="400" y1="420" x2="230" y2="330" color="#564" width="3" arrowSize="1" />
-
-[^1]: [Learn More](https://sli.dev/guide/syntax.html#line-highlighting)
-
-<style>
-.footnotes-sep {
-  @apply mt-20 opacity-10;
-}
-.footnotes {
-  @apply text-sm opacity-75;
-}
-.footnote-backref {
-  display: none;
-}
-</style>
+→ 第二部に進む前に、それぞれの議論の流れをおさらいしておく
 
 ---
 
-# Components
+# 第３章 型なし算術式
+
+## 主な内容
+
+- 「算術式」に関するメタ議論（3.1、3.2、3.4、3.5）
+- 証明技法の紹介（3.3）
+
+---
+
+# 証明技法について
+
+メタな定理を証明するときは、項に関する帰納法をよく使う
+
+本書では、以下の３種類が紹介されている
+
+- サイズに関する帰納法
+- 深さに関する帰納法
+- 構造に関する帰納法
+
+特に、構造に関する帰納法が強力
+
+（3.3を参照）
+
+あと「導出に関する帰納法」とかもある
+
+---
+
+# 算術式とは
+
+> 型システムやその性質について厳密に述べるには、プログラミング言語のより基本的な側面を形式的に取り扱うことから始める必要がある（p.17）
+
+算術式や、ラムダ計算は「より基本的な側面を形式的に」取り出したもの
+
+---
+
+# 型なし算術式の導入
+
+「構文」と「意味論」をおさえればよい
+
+<div grid="~ cols-2 gap-16">
+<div>
+<strong>構文</strong> とは
+
+- プログラミング言語として有効な記号列とそうでないものを区別するための規則
+
+</div>
+<div>
+<strong>意味論</strong> とは
+
+- 項の意味を決定するための規則
+</div>
+</div>
+
+---
+
+# 構文の定義
+
+構文は次のような定義があるが、いずれも等価である（命題3.2.6）
+
+1. 帰納的な項の定義（定義3.2.1）
+
+$$
+\begin{split}
+(1) &\{\text{true, false, }0\} \subseteq \mathfrak{T} \\
+(2) & t_1 \in \mathfrak{T} \Rightarrow \{\text{succ }t_1,\text{pred }t_1,\text{iszero }t_1\}\subseteq \mathfrak{T} \\
+(3) & t_1 \in \mathfrak{T} \text{ and } t_2 \in \mathfrak{T} \text{ and } t_3 \in \mathfrak{T} \Rightarrow \text{if } t_1 \text{ then } t_2 \text{ else } t_3 \subseteq \mathfrak{T}
+\end{split}
+$$
+
+2. 推論規則による項の定義（定義3.2.2） （割愛。p.19を参照）
+3. 具体的な項の定義（定義3.2.3）
+
+$$
+\begin{array}{l}
+S_0 &=& \phi\\
+S_{i+1} &=& \{\text{true},\text{false},0\}\\
+&&\cup\{\text{succ }t_1,\text{pred }t_1, \text{iszero }t_1|t_1\in S_i\}\\
+&&\cup\{\text{if }t_1\text{ then }t_2 \text{ else }t_3|t_1,t_2,t_3\in S_i\}\\
+&&\\
+S &=& \cup_i S_i
+\end{array}\\
+$$
+
+---
+
+# 意味論について
+
+意味論とは、項がどう評価されるかを形式的に定めるものである。
+
+意味論の形式化には次の３つのアプローチがある
+
+- 操作的意味論
+    - > 項tの意味は、tを初期状態として動き始めた機械が到達する最終状態と考えられる(p24)
+- 表示的意味論
+- 公理的意味論
+
+この本では主に、操作的意味論を用いる
+
+---
+
+# 操作的意味論の形式的定義
+
+ブール式だけの操作的意味論が図3-1
 
 <div grid="~ cols-2 gap-4">
 <div>
 
-You can use Vue components directly inside your slides.
-
-We have provided a few built-in components like `<Tweet/>` and `<Youtube/>` that you can use directly. And adding your custom components is also super easy.
-
-```html
-<Counter :count="10" />
-```
-
-<!-- ./components/Counter.vue -->
-<Counter :count="10" m="t-4" />
-
-Check out [the guides](https://sli.dev/builtin/components.html) for more.
-
+構文：
+$$
+\begin{split}
+t ::=&\\
+&\text{true}\\
+&\text{false}\\
+&\text{if }t\text{ else }t\text{ then }t\\
+v ::=&\\
+&\text{true}\\
+&\text{false}
+\end{split}
+$$
 </div>
 <div>
 
-```html
-<Tweet id="1390115482657726468" />
-```
-
-<Tweet id="1390115482657726468" scale="0.65" />
-
+評価：
+$$
+\begin{split}
+\text{if true then }t_2\text{ else }t_3 \rightarrow t_2\quad\text{(E-IFTrue)}\\
+\text{if false then }t_2\text{ else }t_3 \rightarrow t_3\quad\text{(E-IFFalse)}\\
+\frac{t_1 \rightarrow t_1}
+{\text{if }t'_1\text{ then }t_2\text{ else }t_3\rightarrow\text{if }t'_1\text{ else }t_2\text{ then }t_3}\quad&\text{(E-IF)}
+\end{split}
+$$
 </div>
 </div>
 
+左側は項および値の定義である。値は項の部分集合で、評価の最終結果になりうるもの。
 
----
-class: px-20
----
-
-# Themes
-
-Slidev comes with powerful theming support. Themes can provide styles, layouts, components, or even configurations for tools. Switching between themes by just **one edit** in your frontmatter:
-
-<div grid="~ cols-2 gap-2" m="-t-2">
-
-```yaml
----
-theme: default
----
-```
-
-```yaml
----
-theme: seriph
----
-```
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-default/01.png?raw=true">
-
-<img border="rounded" src="https://github.com/slidevjs/themes/blob/main/screenshots/theme-seriph/01.png?raw=true">
-
-</div>
-
-Read more about [How to use a theme](https://sli.dev/themes/use.html) and
-check out the [Awesome Themes Gallery](https://sli.dev/themes/gallery.html).
-
----
-preload: false
----
-
-# Animations
-
-Animations are powered by [@vueuse/motion](https://motion.vueuse.org/).
-
-```html
-<div
-  v-motion
-  :initial="{ x: -80 }"
-  :enter="{ x: 0 }">
-  Slidev
-</div>
-```
-
-<div class="w-60 relative mt-6">
-  <div class="relative w-40 h-40">
-    <img
-      v-motion
-      :initial="{ x: 800, y: -100, scale: 1.5, rotate: -50 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-square.png"
-    />
-    <img
-      v-motion
-      :initial="{ y: 500, x: -100, scale: 2 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-circle.png"
-    />
-    <img
-      v-motion
-      :initial="{ x: 600, y: 400, scale: 2, rotate: 100 }"
-      :enter="final"
-      class="absolute top-0 left-0 right-0 bottom-0"
-      src="https://sli.dev/logo-triangle.png"
-    />
-  </div>
-
-  <div
-    class="text-5xl absolute top-14 left-40 text-[#2B90B6] -z-1"
-    v-motion
-    :initial="{ x: -80, opacity: 0}"
-    :enter="{ x: 0, opacity: 1, transition: { delay: 2000, duration: 1000 } }">
-    Slidev
-  </div>
-</div>
-
-<!-- vue script setup scripts can be directly used in markdown, and will only affects current page -->
-<script setup lang="ts">
-const final = {
-  x: 0,
-  y: 0,
-  rotate: 0,
-  scale: 1,
-  transition: {
-    type: 'spring',
-    damping: 10,
-    stiffness: 20,
-    mass: 2
-  }
-}
-</script>
-
-<div
-  v-motion
-  :initial="{ x:35, y: 40, opacity: 0}"
-  :enter="{ y: 0, opacity: 1, transition: { delay: 3500 } }">
-
-[Learn More](https://sli.dev/guide/animations.html#motion)
-
-</div>
+右側は評価関係とよばれる。
 
 ---
 
-# LaTeX
+# メタな議論
 
-LaTeX is supported out-of-box powered by [KaTeX](https://katex.org/).
+ここまでに導入した構文と操作的意味論（推論規則）をもとに、この「言語」についていくつかのメタ定理を証明する。
+
+- 1ステップ評価の決定性（定理3.5.4）
+- 正規型と値の同値性（定理3.5.7と定理3.5.8）
+- (多ステップ評価関係における)正規型の一意性（定理3.5.11）
+- 評価の停止性（定理3.5.12）
+
+---
+
+# 1ステップ評価の決定性（定理3.5.4）
+
+「1ステップ評価」と「決定性」について
+
+### 1ステップ評価（定義3.5.3）
+<br>
+
+> 1ステップ評価関係とは、図３−１の３つの規則を満たす、項に関する最小の二項関係である
+
+平たく言うと、$t\rightarrow t'$は項tを図３−１のいずれかの規則でt'に変換できるということ
+
+### 1ステップ評価の決定性
+
+$$
+t\rightarrow t'\text{ かつ }t\rightarrow t'' \Rightarrow t'=t''
+$$
+
+１ステップ評価した結果は一通りに定まるということ
+
+証明は導出に関する帰納法を用いる
+
+---
+
+# 正規型と値の同値性（定理3.5.7と定理3.5.8）
+
+正規型について
+
+
+### 正規型の定義（定義3.5.6）
+<br>
+
+> 項tが<strong>正規型</strong>であるとは、当てはまる評価規則がない、つまり$t\rightarrow t'$となる$t'$が存在しないということである
 
 <br>
 
-Inline $\sqrt{3x-1}+(1+x)^2$
+### 定理3.5.7と定理3.5.8
+<br>
 
-Block
+- すべての値は正規型である（定理3.5.7）
+- $t$が正規型であるならば$t$は値である（定理3.5.8）
+
+証明は構造的帰納法を用いる
+
+定理3.5.8は一般の体系では成り立たない（実行時エラー）
+
+---
+
+# 多ステップ評価関係における正規型の一意性（定理3.5.11）
+
+### 多ステップ評価関係の定義（定義3.5.9）
+
+多ステップ評価関係$\rightarrow^{\ast}$とは１ステップ評価の反射的推移的閉包である
+
+(1) $t\rightarrow t'$ ならば $t\rightarrow^{\ast}t'$
+
+(2) すべての$t$について$t\rightarrow^{\ast}t$
+
+(3) $t\rightarrow^{\ast}t'$かつ$t'\rightarrow^{\ast}t''$ならば$t\rightarrow^{\ast}t''$
+
+### 正規型の一意性（定理3.5.11）
+<br>
+
+> $t\rightarrow^{\ast}u$かつ$t\rightarrow^{\ast}u'$で、$u$と$u'$が両方正規型ならば、$u=u'$が成り立つ
+
+---
+
+# 評価の停止性（定理3.5.12）
+
+定理3.5.12
+
+> すべての項$t$に対して、ある正規型$t'$が存在し、$t\rightarrow^{\ast}t'$を満たす
+
+証明には項のサイズに関する帰納法を用いる
+
+これも一般に成り立つわけではない（無限ループとか）
+
+---
+
+# メタな議論(再掲)
+
+以下のようなメタ定理を確認しました
+
+- 1ステップ評価の決定性（定理3.5.4）
+- 正規型と値の同値性（定理3.5.7と定理3.5.8）
+- (多ステップ評価関係における)正規型の一意性（定理3.5.11）
+- 評価の停止性（定理3.5.12）
+
+ここまではboolのみの体系だったが、ここから算術式を含む体系に拡張する
+
+---
+
+# 型なし算術式
+
+図3-2
+
+<div grid="~ cols-2 gap-4">
+<div>
+新しい構文形式
+
 $$
-\begin{array}{c}
+\begin{split}
+t ::=& ...\\
+&0\\
+&\text{succ }t\\
+&\text{pred }t\\
+&\text{iszero }t\\
+v ::=&...\\
+&\text{nv}\\
+nv ::=&...\\
+&0\\
+&\text{succ nv}
+\end{split}
+$$
+</div>
+<div>
+新しい評価規則
 
-\nabla \times \vec{\mathbf{B}} -\, \frac1c\, \frac{\partial\vec{\mathbf{E}}}{\partial t} &
-= \frac{4\pi}{c}\vec{\mathbf{j}}    \nabla \cdot \vec{\mathbf{E}} & = 4 \pi \rho \\
+$$
+\begin{split}
+&\frac{t_1\rightarrow t'_1}{\text{succ }t_1\rightarrow\text{succ }t'_1}\quad\text{(E-Succ)}\\
+&\text{pred }0 \rightarrow 0\quad\text{(E-Zero)}\\
+&\text{pred}(\text{succ nv}_1) \rightarrow\text{nv}_1\quad\text{(E-PredSucc)}\\
+&\frac{t_1\rightarrow t'_1}{\text{pred }t_1\rightarrow \text{pred }t'_1}\quad\text{(E-Pred)}\\
+&\text{iszero }0\rightarrow \text{true}\quad\text{(E-IsZeroZero)}\\
+&\text{iszero}(\text{succ nv})\rightarrow \text{false}\quad\text{(E-IsZeroSucc)}\\
+&\frac{t_1\rightarrow t'_1}{\text{iszero }t_1\rightarrow\text{iszero }t'_1}\quad\text{(E-IsZero)}
+\end{split}
+$$
+</div>
+</div>
 
-\nabla \times \vec{\mathbf{E}}\, +\, \frac1c\, \frac{\partial\vec{\mathbf{B}}}{\partial t} & = \vec{\mathbf{0}} \\
+これは「新しく追加される規則」
 
-\nabla \cdot \vec{\mathbf{B}} & = 0
+---
 
+# 各種メタ定理について
+
+boolのみの体系で成り立っていた定理が算術式に拡張した時に成り立つかどうか
+
+### 対応表
+
+| | |
+| --- | --- |
+| 1ステップ評価の決定性 | 成り立つ |
+| 値と正規型の同値性 | 成り立たない |
+| 多ステップ評価における、正規型の一意性 | 成り立つ |
+| 評価の停止性 | 成り立つ |
+
+---
+
+# 行き詰まり状態
+
+行き詰まり状態とは
+
+「値と正規型の同値性」は算術式に拡張した体系では成り立たない。
+
+これは例えば$\text{succ true}$のように、正規型であるが値ではない項が存在するからである。これを<strong>行き詰まり状態</strong>と呼ぶ（定理3.5.15）
+
+行き詰まり状態は大事↓
+
+
+> 行き詰まり状態の項は無意味または間違ったプログラムに対応する。したがって、項を実際に評価せずに、その項の評価が決して行き詰まり状態になら<strong>ない</strong>ことをいいたい。そのために、数値に評価される項（pred、succ、iszeroの引数にできるのはこれだけ）と、ブール値に評価される項（条件式の条件部分となれるのはこれだけ）とを区別できる必要がある。項をこのように分類するために、二つの<strong>型</strong><strong>Nat</strong>と<strong>Bool</strong>を導入する。（p69）
+
+算術式は以上
+
+---
+
+# 第５章　型なしラムダ計算
+
+主な内容
+
+- ラムダ計算の導入（5.1、5.3）
+    - 構文
+    - 操作的意味論
+        - 簡約の規則
+        - 代入の扱い
+- ラムダ計算に慣れる（5.2）
+
+---
+
+# ラムダ計算
+
+ラムダ計算とは
+
+関数定義と関数適用を抽象化したもの
+
+ラムダ計算の構文は以下の通り
+
+
+$$
+\begin{array}{l}
+t ::=&&\\
+&x\quad\\
+&\lambda x.t\\
+&t\quad t&
 \end{array}
 $$
 
-<br>
 
-[Learn more](https://sli.dev/guide/syntax#latex)
+シンプルな定義だが、これだけで３章の算術式と同等以上の表現能力を持つ
 
 ---
 
-# Diagrams
+# ラムダ計算の操作的意味論
 
-You can create diagrams / graphs from textual descriptions, directly in your Markdown.
+構文の次は操作的意味論を導入する
 
-<div class="grid grid-cols-3 gap-10 pt-4 -mb-6">
+ラムダ計算の操作的意味論は
 
-```mermaid {scale: 0.5}
-sequenceDiagram
-    Alice->John: Hello John, how are you?
-    Note over Alice,John: A typical interaction
-```
+1. 評価順序（どの項をどの順番で適用するか）
+1. 代入規則（適用時に項をどう置き換えるか）
 
-```mermaid {theme: 'neutral', scale: 0.8}
-graph TD
-B[Text] --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
+について考える必要がある
 
-```plantuml {scale: 0.7}
-@startuml
+---
 
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
+# ラムダ計算の評価順序（評価戦略）
 
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
+> ラムダ計算のための評価戦略には数種類あり、長年にわたってプログラミング言語の設計者や理論家が研究してきた。（p42）
 
-cloud {
-  [Example 1]
-}
+- 完全ベータ簡約
+    - 任意の簡約基をいつでも簡約してよい
+- 非正格な評価（遅延評価）
+    - 正規順序
+        - 最も左かつもっとも外側の簡約基を最初に簡約する
+    - 名前呼び
+        - 抽象の内部で簡約しない。関数適用における被適用項も簡約しない（多分）
+    - 必要呼び
+        - 名前呼びに加え、一度簡約した結果をメモ化しておき、利用するというもの
+        - Haskell、Rで採用されている
+- 正格な評価
+    - 値呼び
+        - ほとんどの言語で採用されている
+
+---
+
+# ラムダ計算における代入の形式的な定義
+
+代入は難しい。単純に置き換えればいいかというと、そうでもない。
+
+1. 束縛変数を誤って置換してしまうパターン
+
+$$
+[x\mapsto y](\lambda x.x) = \lambda x.y \quad\text{まちがい}
+$$
+
+2. 変数捕獲が起こるパターン
+
+$$
+[x\mapsto z](\lambda z.x) = \lambda z.x \quad\text{これもまちがい}
+$$
+
+---
+
+# ラムダ計算における代入の形式的な定義
+
+つづき
+
+要するに、$[x\mapsto s]t$という代入を行う際は
+
+1. xがtの束縛変数かどうか
+2. sの自由変数がtの束縛変数かどうか
+
+をチェックする必要がある
+
+特に、sの自由変数がtの束縛変数だった場合は項中の変数名を一貫して置き換えて（アルファ変換）変数束縛が起こらないようにする。
+
+> 慣習5.3.4 束縛変数の名前のみが異なる項は、任意の文脈で置き換え可能である
 
 
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
+---
 
+# ラムダ計算における代入の形式的な定義
 
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
+つづき
 
-@enduml
-```
+これらを踏まえた代入の定義が以下
 
+定義5.3.5
+
+$$
+\begin{split}
+&[x\mapsto s]x = s\\
+&[x\mapsto s]y = y\quad y\neq x\text{の場合}\\
+&[x\mapsto s](\lambda y.t_1)=\lambda y.[x\mapsto s]t_1\quad y\neq x\text{かつ}y\notin FV(s)\text{の場合}\\
+&[x\mapsto s](t_1\quad t_2)=([x\mapsto s]t_1)([x\mapsto s]t_2)
+\end{split}
+$$
+
+---
+
+# ラムダ計算における操作的意味論
+
+個々までの議論を踏まえて
+
+<div grid="~ cols-2 gap-4">
+<div>
+構文：
+
+$$
+\begin{split}
+t ::=&\\
+&x\\
+&\lambda x.t\\
+&t\quad t\\
+v ::=&\\
+&\lambda x.t
+\end{split}
+$$
+</div>
+<div>
+評価：
+
+$$
+\begin{split}
+\frac{t_1\rightarrow t'_1}{t_1\quad t_2\rightarrow t'_1\quad t_2}&\quad\text{(E-App1)}\\
+\frac{t_2\rightarrow t'_2}{v_1\quad t_2\rightarrow v_1\quad t'_2}&\quad\text{(E-App2)}\\
+(\lambda x.t_{12})v_2\rightarrow [x\mapsto v_2]t_{12}&\quad\text{(E-AppAbs)}
+\end{split}
+$$
+</div>
 </div>
 
-[Learn More](https://sli.dev/guide/syntax.html#diagrams)
+E-App1、E-App2によって、値呼びが表現されている
 
+---
+
+# ラムダ計算の表現能力
+
+- Church数
+- Churchブール
+- $\lambda NB$
+- 再帰
+
+詳しいことは割愛（5.2を見てください）
+
+算術式と同等以上の計算能力があるということ。
 
 ---
 layout: center
 class: text-center
 ---
 
-# Learn More
+このスライドはslidevを使って作成した
 
-[Documentations](https://sli.dev) · [GitHub](https://github.com/slidevjs/slidev) · [Showcases](https://sli.dev/showcases.html)
+https://sli.dev
+
+---
+layout: image
+image: ./picture/sleeping_cat.jpg
+---
+
+# つかれた
