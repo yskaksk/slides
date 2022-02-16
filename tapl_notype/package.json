@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "@slidev/cli": "^0.28.5",
-    "@slidev/theme-default": "*",
+    "@slidev/theme-default": "^0.21.1",
     "@slidev/theme-seriph": "*"
   },
-  "name": "tapl_ch3_ch5"
+  "name": "tapl_notype"
 }
